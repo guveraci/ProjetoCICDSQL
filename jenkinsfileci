@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout'){
+            steps{
+                echo "Pipeline Usando Jenkinsfile"
+
+            }
+
+        }
+
+        stage('Inicio'){
+            steps{
+                echo "Pipeline Usando Jenkinsfile"
+
+            }
+        }
+    }
+}
