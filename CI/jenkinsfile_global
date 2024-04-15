@@ -4,14 +4,14 @@ pipeline {
     stages {
         stage('Version') {
             steps {
-                sh "pwsh --version"
+                pwsh "--version"
             }
         }
         
         stage ("PowerShell") {
 
             steps {
-                sh "pwsh devops/gera-pacote.ps1" 
+                pwsh "devops/gera-pacote.ps1" 
             }
         
             }
