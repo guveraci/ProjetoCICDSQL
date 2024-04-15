@@ -9,13 +9,9 @@ pipeline {
         }
         
         stage ("PowerShell") {
-            when {
-                anyOf {
-                    branch 'main'
-                }
-            }
+
             steps {
-                pwsh ( returnStatus: true, script: "&.\devops\gera-pacotes.ps1")
+                sh 'pwsh devops/gera-pacote.ps1' 
             }
         
             }
