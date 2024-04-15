@@ -6,7 +6,7 @@ pipeline {
         stage ("PowerShell") {
 
             steps {
-                powershell (script: 'gera-pacote.ps1')
+                bat 'powershell.exe -Arquivo "devops\\gera-pacote.ps1"'
             }
         
             }
