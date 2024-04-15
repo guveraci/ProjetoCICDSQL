@@ -2,17 +2,16 @@ pipeline {
     agent none
     
     stages {
-        agent {
+        stage ("PowerShell") {
+            agent {
             docker {
                 image 'mcr.microsoft.com/powershell'
                 label 'windows'
                     }
                 }
-        stage ("PowerShell") {
-
-            steps {
-                echo 'Hello World'
-            }
+                steps {
+                    echo 'Hello World'
+                }
         
             }
         }
