@@ -2,32 +2,17 @@ pipeline {
     agent any
     
     stages {
-        stage('Checkout') {
+        stage('Teste') {
             steps {
-                checkout scm
+                echo "Teste"
             }
         }
         
         stage ("PowerShell") {
             steps {
-                pwsh ( returnStatus: true, script: "&.\gera-pacotes.ps1")
+                pwsh ( returnStatus: true, script: "&.\devops\gera-pacotes.ps1")
             }
         
-        stage('Test') {
-            steps {
-                sh 'dotnet test'
-            }
-        }
-        
-        stage('Publish') {
-            steps {
-                sh 'dotnet publish -c Release -o ./publish'
-            }
-        }
-        
-        stage('Database Setup') {
-            steps {
-                sh 'sqlcmd -S <server> -U <username> -P <password> -i path/to/your/database/script.sql'
             }
         }
     }
