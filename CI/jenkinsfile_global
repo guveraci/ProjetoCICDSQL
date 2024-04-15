@@ -6,7 +6,7 @@ pipeline {
         stage ("PowerShell") {
 
             steps {
-                powershell "devops/gera-pacote.ps1"
+                pwsh -NonInteractive -File "/devops/gera-pacote.ps1"
             }
         
             }
