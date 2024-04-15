@@ -1,12 +1,17 @@
 pipeline {
-    agent any
+    agent none
     
     stages {
-        
+        agent {
+            docker {
+                image 'mcr.microsoft.com/powershell'
+                label 'windows'
+                    }
+                }
         stage ("PowerShell") {
 
             steps {
-                pwsh -File './devops/gera-pacote.ps1' -DefinitionName teste
+                echo 'Hello World'
             }
         
             }
