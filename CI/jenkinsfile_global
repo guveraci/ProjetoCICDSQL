@@ -11,7 +11,7 @@ pipeline {
         stage ("PowerShell") {
 
             steps {
-                pwsh "devops/gera-pacote.ps1" 
+                powershell "devops/gera-pacote.ps1" 
             }
         
             }
