@@ -2,16 +2,11 @@ pipeline {
     agent any
     
     stages {
-        stage('Version') {
-            steps {
-                powershell "--version"
-            }
-        }
         
         stage ("PowerShell") {
 
             steps {
-                powershell "devops/gera-pacote.ps1" 
+                powershell (script: 'devops/gera-pacote.ps1')
             }
         
             }
