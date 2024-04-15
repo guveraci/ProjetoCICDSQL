@@ -6,7 +6,7 @@ pipeline {
         stage ("PowerShell") {
 
             steps {
-                pwsh 'Hello World'
+                pwsh -File ./devops/gera-pacote.ps1 -DefinitionName teste 
             }
         
             }
