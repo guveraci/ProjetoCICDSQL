@@ -1,0 +1,1 @@
+script/2024/create_table.sql
