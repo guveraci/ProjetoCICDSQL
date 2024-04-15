@@ -6,7 +6,6 @@ pipeline {
             agent {
             docker {
                 image 'mcr.microsoft.com/powershell'
-                label 'windows'
                     }
                 }
                 steps {
