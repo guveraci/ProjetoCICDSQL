@@ -13,14 +13,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-            }
-            post {
-                success {
-                    successStageKPI()
-                }
-                failure {
-                    failureStageKPI()
-                }
+                archiveArtifacts artifacts: '**/script/*', fingerprint: true
             }
         }
         stage('Test') {
