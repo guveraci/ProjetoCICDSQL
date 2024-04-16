@@ -13,8 +13,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh 'pwsh'
-
+            }
+            post {
+                success {
+                    successStageKPI()
+                }
+                failure {
+                    failureStageKPI()
+                }
             }
         }
         stage('Test') {
