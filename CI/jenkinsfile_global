@@ -13,8 +13,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh 'pwsh -File ./devops/gera-pacote.ps1 -DefinitionName Gerador'
-                archiveArtifacts artifacts: '**/script/', fingerprint: true
+                sh '-version'
             }
         }
         stage('Test') {
