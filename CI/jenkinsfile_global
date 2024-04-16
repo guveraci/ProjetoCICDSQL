@@ -1,17 +1,32 @@
+node {
+    checkout scm 
+}
+
 pipeline {
-    agent none
-    
+    agent any
+
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+    }
     stages {
-        stage ("PowerShell") {
-            agent {
-            docker {
-                image 'mcr.microsoft.com/powershell'
-                    }
-                }
-                steps {
-                    echo 'Hello World'
-                }
-        
+        stage('Build') {
+            steps {
+                echo 'Building..'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
             }
         }
     }
+
+
+
+
+}
