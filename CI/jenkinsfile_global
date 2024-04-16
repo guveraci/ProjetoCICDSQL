@@ -11,9 +11,12 @@ pipeline {
             }
         }
         stage('Build') {
+            tools {
+                jdk "jdk-21" // the name you have given the JDK installation using the JDK manager (Global Tool Configuration)
+            }
             steps {
                 echo 'Building..'
-                sh '-version'
+                sh 'pwsh -File ./devops/gera-pacote.ps1 -DefinitionName Gerador'
             }
         }
         stage('Test') {
