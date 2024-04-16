@@ -1,7 +1,3 @@
-node {
-    checkout scm 
-}
-
 pipeline {
     agent any
 
@@ -9,6 +5,11 @@ pipeline {
         timeout(time: 30, unit: 'MINUTES')
     }
     stages {
+        stage('Pre Build') {
+            steps {
+                echo ' Pre Building..'
+            }
+        }
         stage('Build') {
             steps {
                 echo 'Building..'
