@@ -13,7 +13,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                archiveArtifacts artifacts: '**/script/*', fingerprint: true
+                archiveArtifacts artifacts: '**/script/', fingerprint: true
             }
         }
         stage('Test') {
