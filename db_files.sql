@@ -1,1 +1,1 @@
-script/2024/Tables/create_table.sql
+script/db/tables/create_table.sql
