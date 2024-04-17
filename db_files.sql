@@ -1,2 +1,2 @@
--- Teste
-src\main\resources\db\Tables\teste.sql
+--Testes
+bd/resources/script/Tables/Teste.sql

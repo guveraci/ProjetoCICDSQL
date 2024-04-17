@@ -7,7 +7,7 @@ Param
 ###test1
 Write-Output "########################### Inicio do Build $BuildNumber ###########################"
 $dir_root = Get-Location
-$getchilditem= Get-ChildItem src -Recurse -Name
+$getchilditem= Get-ChildItem bd -Recurse -Name
 [array]::Reverse($getchilditem)
 $db_files="db_files.sql"
 $rollback_file="rollback.sql"
@@ -51,7 +51,7 @@ function validateFiles([string]$file) {
 			return
 		}
 		
-		$file_row = $_.replace("/","\") 
+		$file_row = $_.replace("/","/") 
 
 		#valida comentario
 		if($_.length -gt 2){
@@ -62,7 +62,7 @@ function validateFiles([string]$file) {
 		}	
 				
 		#Valida diretorios
-		if(-Not ($file_row.contains("src\main\resources\db\"))){
+		if(-Not ($file_row.contains("bd/resources/script/"))){
 			Write-Warning "######## Estrutura de diretorio incorreta: $file_row" 
 			$erro++
 			return
@@ -82,7 +82,7 @@ function validateFiles([string]$file) {
 			return
 		}		
 		
-		$file_row = $file_row.replace("src\main\resources\db\","")
+		$file_row = $file_row.replace("bd/resources/script/","")
 
 		if($file -eq $rollback_file){
 			$temp_file = $temp_rollback_file
@@ -99,7 +99,7 @@ function validateFiles([string]$file) {
 
 		$quantity_temp_file++
 		foreach ($row in $getchilditem) {
-			$new_row = $row.replace("main\resources\db\","")
+			$new_row = $row.replace("resources/script/","")
 			if($_ -ceq $new_row){
 				$quantity_files++
 			}
@@ -148,15 +148,15 @@ function createFoldersStructure([string]$structure){
 
 	Set-Location $dir_root
 	Get-Content $temp_file | ForEach-Object {
-		$dir_end = $_.indexOf("\")
+		$dir_end = $_.indexOf("/")
 		$dir_name = $_.Substring(0,$dir_end)
 		Set-Location $dir_temp
 		New-Item -ErrorAction Ignore -ItemType directory -Path $dir_name | Out-Null
 		
 		#Existe subdiretorio
-		if($_.indexOf("\") -ne $_.LastIndexOf("\")){
-			$str_file_name_size = $_.LastIndexOf("\") - $_.indexOf("\") - 1
-			$subdir_name = $_.Substring($_.indexOf("\")+1,$str_file_name_size)
+		if($_.indexOf("/") -ne $_.LastIndexOf("/")){
+			$str_file_name_size = $_.LastIndexOf("/") - $_.indexOf("/") - 1
+			$subdir_name = $_.Substring($_.indexOf("/")+1,$str_file_name_size)
 			Set-Location $dir_name
 			New-Item -ErrorAction Ignore -ItemType directory -Path $subdir_name | Out-Null
 			Set-Location ..
@@ -188,7 +188,7 @@ function copyFilesToFolders([string]$structure) {
 
 	Set-Location $dir_root
 	Get-Content $temp_file | ForEach-Object {
-		$origin = "src\main\resources\db\"+$_
+		$origin = "bd/resources/script/"+$_
 		$destin = $has_prefix+$_		
 		if($structure -eq "backup"){
 			$file_name = getFileName($destin)
@@ -223,7 +223,7 @@ function createScriptCaller() {
 	Write-Output "@@chamador-status-$DefinitionName-$BuildNumber.sql" | Out-File -Encoding UTF8 -Append $sql_file	
 
 	Get-Content $temp_db_files | ForEach-Object {
-		$_ = $_.replace("\","/") 
+		$_ = $_.replace("/","/") 
 		Write-Output "@@script/$_" | Out-File -Encoding UTF8 -Append $sql_file
 	}
 	
@@ -311,7 +311,7 @@ end;
 	Get-Content $temp_db_files | ForEach-Object {
 
 		$file_name = getFileName($_);
-		$_ = $_.replace("\","/") 
+		$_ = $_.replace("/","/") 
 		
 		Write-Output "SPOOL 'backup/$_'" | Out-File -Encoding UTF8 -Append $sql_file		
        Write-Output "SELECT DBMS_METADATA.GET_DDL(REPLACE(a.OBJECT_TYPE,CHR(32),'_'),a.OBJECT_NAME,a.OWNER) as script FROM dba_objects a WHERE OBJECT_NAME=replace(upper('$file_name'),'TRON2000_','') and  OWNER = 'TRON2000' ORDER BY a.OBJECT_TYPE , a.OBJECT_NAME ,a.OWNER;" | Out-File -Encoding UTF8 -Append $sql_file		
@@ -334,7 +334,7 @@ end;
 	Write-Output "" | Out-File -Encoding UTF8 -Append $sql_file2		
 
 	Get-Content $temp_db_files | ForEach-Object {
-		$_ = $_.replace("\","/") 
+		$_ = $_.replace("/","/") 
 		Write-Output "@@backup/$_" | Out-File -Encoding UTF8 -Append $sql_file2
 	}
 	
@@ -370,7 +370,7 @@ function createRollbackCaller() {
 	Write-Output "@@chamador-status-$DefinitionName-$BuildNumber.sql" | Out-File -Encoding UTF8 -Append $sql_file	
 
 	Get-Content $temp_rollback_file | ForEach-Object {
-		$_ = $_.replace("\","/") 
+		$_ = $_.replace("/","/") 
 		Write-Output "@@rollback/$_" | Out-File -Encoding UTF8 -Append $sql_file
 	}
 
@@ -385,7 +385,7 @@ function createRollbackCaller() {
 #Retornar o nome do arquivo
 function getFileName([string]$full_path){
 
-	$full_path = $full_path.replace("\","/")
+	$full_path = $full_path.replace("/","/")
 	$full_path = $full_path.replace("TRON2000_","")
 	$full_path = $full_path.replace(".SQL","")
 	$full_path = $full_path.replace(".sql","")			
@@ -406,7 +406,7 @@ function getFileName([string]$full_path){
 #Retornar o nome do diretorio
 function getFolderName([string]$full_path){
 
-	$full_path = $full_path.replace("\","/")
+	$full_path = $full_path.replace("/","/")
 	$full_path = $full_path.replace("TRON2000_","")
 	$full_path = $full_path.replace(".SQL","")
 	$full_path = $full_path.replace(".sql","")			
