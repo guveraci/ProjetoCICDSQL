@@ -1,11 +1,11 @@
 Param
 (
     [Parameter(Mandatory = $true)]
-    [String]$DefinitionName,
+    [String]$DefinitionName
 
 )
 ###test1
-Write-Output "########################### Inicio do Build $BuildNumber ###########################"
+Write-Output "########################### Inicio do Build ###########################"
 $dir_root = Get-Location
 $getchilditem= Get-ChildItem script -Recurse -Name
 [array]::Reverse($getchilditem)
@@ -213,14 +213,14 @@ function createScriptCaller() {
 	copyFilesToFolders("script"); 
 
 	Set-Location $dir_root
-	$sql_file="chamador-$DefinitionName-$BuildNumber.sql"
+	$sql_file="chamador-$DefinitionName.sql"
 
 	Write-Output " " | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "SET DEFINE OFF" | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "SET ECHO ON;" | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "SET SERVEROUTPUT ON" | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "" | Out-File -Encoding UTF8 -Append $sql_file
-	Write-Output "@@chamador-status-$DefinitionName-$BuildNumber.sql" | Out-File -Encoding UTF8 -Append $sql_file	
+	Write-Output "@@chamador-status-$DefinitionName.sql" | Out-File -Encoding UTF8 -Append $sql_file	
 
 	Get-Content $temp_db_files | ForEach-Object {
 		$_ = $_.replace("\","/") 
