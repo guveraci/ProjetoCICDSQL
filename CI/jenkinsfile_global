@@ -35,7 +35,7 @@ pipeline {
             }
             steps {
                 script {
-                        sh 'sonar-scanner \
+                        sh 'mvn clean package sonar-scanner \
                         sonar.projectKey=Teste_SQL \
                         sonar.sources=. \
                         sonar.host.url=http://localhost:9000 \
