@@ -51,7 +51,7 @@ function validateFiles([string]$file) {
 			return
 		}
 		
-		$file_row = $_.replace("/","\") 
+		$file_row = $_.replace("\","/") 
 
 		#valida comentario
 		if($_.length -gt 2){
@@ -62,7 +62,7 @@ function validateFiles([string]$file) {
 		}	
 				
 		#Valida diretorios
-		if(-Not ($file_row.contains("script/2024/"))){
+		if(-Not ($file_row.contains("script\2024\"))){
 			Write-Warning "######## Estrutura de diretorio incorreta: $file_row" 
 			$erro++
 			return
@@ -82,7 +82,7 @@ function validateFiles([string]$file) {
 			return
 		}		
 		
-		$file_row = $file_row.replace("script/2024/","")
+		$file_row = $file_row.replace("2024\","")
 
 		if($file -eq $rollback_file){
 			$temp_file = $temp_rollback_file
@@ -99,7 +99,7 @@ function validateFiles([string]$file) {
 
 		$quantity_temp_file++
 		foreach ($row in $getchilditem) {
-			$new_row = $row.replace("2024/","")
+			$new_row = $row.replace("2024\","")
 			if($_ -ceq $new_row){
 				$quantity_files++
 			}
