@@ -27,7 +27,7 @@ pipeline {
                     archiveArtifacts artifacts: 'script/', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
                     archiveArtifacts artifacts: 'devops/', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
                     archiveArtifacts artifacts: '*.sql', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS         
-              }ß
+              }
             }
         }
         stage('Pos Build') {
