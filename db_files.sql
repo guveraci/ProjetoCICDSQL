@@ -1,2 +1,2 @@
 -- Teste
-script/db/tables/create_table.sql
+script/resources/db/tables/create_table.sql
