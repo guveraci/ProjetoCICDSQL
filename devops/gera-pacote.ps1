@@ -62,7 +62,7 @@ function validateFiles([string]$file) {
 		}	
 				
 		#Valida diretorios
-		if(-Not ($file_row.contains("\script\db\"))){
+		if(-Not ($file_row.contains("script\db\"))){
 			Write-Warning "######## Estrutura de diretorio incorreta: $file_row" 
 			$erro++
 			return
