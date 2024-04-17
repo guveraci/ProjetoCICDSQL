@@ -31,7 +31,6 @@ pipeline {
             }
             steps {
                 echo 'Pos Building..'
-                sh 'rm -rf *.sql'
             }
         }
         stage('Test') {
