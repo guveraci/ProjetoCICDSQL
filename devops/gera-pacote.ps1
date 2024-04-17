@@ -11,8 +11,8 @@ $getchilditem= Get-ChildItem script -Recurse -Name
 [array]::Reverse($getchilditem)
 $db_files="db_files.sql"
 $rollback_file="rollback.sql"
-$temp_db_files="temp-lista-exec-scripts-$DefinitionName-10.sql"
-$temp_rollback_file="temp-lista-exec-rollback-$DefinitionName-$BuildNumber.sql"
+$temp_db_files="temp-lista-exec-scripts-$DefinitionName-11.sql"
+$temp_rollback_file="temp-lista-exec-rollback-$DefinitionName-11.sql"
 
 
 #Valida se os arquivos DB_FILES.SQL e ROLLBACK.SQL existem
