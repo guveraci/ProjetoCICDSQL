@@ -1,1 +1,1 @@
-script\2024\Tables\create_table.sqlß
+script\2024\Tables\create_table.sql
