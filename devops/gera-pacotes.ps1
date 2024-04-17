@@ -2,7 +2,7 @@ Param
 (
     [Parameter(Mandatory = $true)]
     [String]$DefinitionName,
-    [String]$BuildNumber  = 1
+    [String]$BuildNumber  = 100
 )
 ###test1
 Write-Output "########################### Inicio do Build $BuildNumber ###########################"
