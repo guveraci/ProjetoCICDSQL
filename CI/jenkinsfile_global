@@ -16,7 +16,7 @@ pipeline {
             }
             steps {
                 echo 'Building..'
-                sh 'pwsh -File ./devops/gera-pacotes.ps1'
+                sh 'pwsh -File ./devops/gera-pacotes.ps1 -DefinitionName GeradorDePacotes'
             }
         }
         stage('Test') {
