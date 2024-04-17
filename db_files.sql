@@ -1,1 +1,1 @@
-script/db/tables/create_table.sql
+script\db\tables\create_table.sql
