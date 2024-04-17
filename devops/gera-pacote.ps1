@@ -10,12 +10,9 @@ $dir_root = Get-Location
 $getchilditem= Get-ChildItem script -Recurse -Name
 [array]::Reverse($getchilditem)
 $db_files="db_files.sql"
-$rollback_file="rollback.sql"
 $temp_db_files="temp-lista-exec-scripts-$DefinitionName.sql"
-$temp_rollback_file="temp-lista-exec-rollback-$DefinitionName.sql"
 
-
-#Valida se os arquivos DB_FILES.SQL e ROLLBACK.SQL existem
+#Valida se os arquivos DB_FILES.SQL
 #Retorna 1 quando o arquivo nao existe 
 #Retorna 0 quando o arquivo existe 
 function fileExist([string]$myfile) {
@@ -32,7 +29,7 @@ function fileExist([string]$myfile) {
 	return 1
 }
 
-#Valida os arquivos DB_FILES.SQL e ROLLBACK.SQL
+#Valida os arquivos DB_FILES.SQL
 #Retorna 1 quando o arquivo é invalido
 function validateFiles([string]$file) {
 
@@ -84,10 +81,6 @@ function validateFiles([string]$file) {
 		
 		$file_row = $file_row.replace("script\resources\db\","")
 
-		if($file -eq $rollback_file){
-			$temp_file = $temp_rollback_file
-		}
-
 		Write-Output "$file_row" | Out-File -Encoding UTF8 -Append $temp_file
 	}
 	
@@ -127,7 +120,7 @@ function validateFiles([string]$file) {
 #Criar a estrutura de pastas e subpastas, esta estrutura pode ser dos scripts executados, backup ou rollback 
 function createFoldersStructure([string]$structure){
 
-	if(-Not ($structure -eq "script" -or $structure -eq "backup" -or $structure -eq "rollback")){
+	if(-Not ($structure -eq "script" -or $structure -eq "backup")){
 		Write-Error -Exception "Erro na criacao de pastas" -Message "######## Nao e possivel criar as pastas, estrutura invalida"
 		exit 1
 	}
@@ -140,10 +133,7 @@ function createFoldersStructure([string]$structure){
 		$dir_temp = "$dir_root\backup"
 		$temp_file = $temp_db_files
 	}
-	if($structure -eq "rollback"){
-		$dir_temp = "$dir_root\rollback"
-		$temp_file = $temp_rollback_file
-	}
+
 	New-Item -ErrorAction Ignore -ItemType directory -Path $dir_temp | Out-Null	
 
 	Set-Location $dir_root
@@ -169,7 +159,7 @@ function createFoldersStructure([string]$structure){
 #Copiar para a estrutura de pastas os arquivos SQL que serao executados
 function copyFilesToFolders([string]$structure) {
 
-	if(-Not ($structure -eq "script" -or $structure -eq "rollback" -or $structure -eq "backup")){
+	if(-Not ($structure -eq "script" -or $structure -eq "backup")){
 		Write-Error -Exception "Erro na copia dos arquivos " -Message "######## Nao e possivel copiar arquivos, estrutura invalida"
 		exit 1
 	}
@@ -180,10 +170,6 @@ function copyFilesToFolders([string]$structure) {
 	if($structure -eq "backup"){
 		$temp_file = $temp_db_files
 		$has_prefix = "backup\"
-	}
-	if($structure -eq "rollback"){
-		$temp_file = $temp_rollback_file
-		$has_prefix = "rollback\"
 	}
 
 	Set-Location $dir_root
@@ -205,10 +191,7 @@ function copyFilesToFolders([string]$structure) {
 function createScriptCaller() {
 
 	$error = validateFiles($db_files)
-	if ($error -eq 1){
-		Write-Output "######## Nao existe plano de rollback. Arquivo $rollback_file nao encontrado!"
-		return
-	}	
+
 	createFoldersStructure("script");
 	copyFilesToFolders("script"); 
 
@@ -227,7 +210,7 @@ function createScriptCaller() {
 		Write-Output "@@script/$_" | Out-File -Encoding UTF8 -Append $sql_file
 	}
 	
-	Write-Output "@@chamador-status-$DefinitionName-$BuildNumber.sql" | Out-File -Encoding UTF8 -Append $sql_file	
+	Write-Output "@@chamador-status-$DefinitionName.sql" | Out-File -Encoding UTF8 -Append $sql_file	
 	Write-Output "" | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "/" | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "QUIT" | Out-File -Encoding UTF8 -Append $sql_file
@@ -239,7 +222,7 @@ function createScriptCaller() {
 #Gera o arquivo chamador-status
 function createStatusCheck() {
 
-	$sql_file="chamador-status-$DefinitionName-$BuildNumber.sql"
+	$sql_file="chamador-status-$DefinitionName.sql"
 	
 	Write-Output " " | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "SET SQLBLANKLINES ON;" | Out-File -Encoding UTF8 -Append $sql_file
@@ -328,42 +311,6 @@ function createBackupPackageAndCaller() {
 	
 	Write-Output "######## $sql_file2 criado com sucesso!"
 }
-
-#Gera o arquivo chamador-rollback
-function createRollbackCaller() {
-
-	$error = validateFiles($rollback_file)
-	if ($error -eq 1){
-		Write-Output "######## Nao existe plano de rollback. Arquivo $rollback_file nao encontrado!"
-		return
-	}
-
-	createFoldersStructure("rollback");
-	copyFilesToFolders("rollback");	
-
-	Set-Location $dir_root
-	$sql_file="chamador-rollback-$DefinitionName-$BuildNumber.sql"
-	Write-Output "######## Existe um plano de rollback. Criando script de rollback"
-
-	Write-Output " " | Out-File -Encoding UTF8 -Append $sql_file
-	Write-Output "SET DEFINE OFF" | Out-File -Encoding UTF8 -Append $sql_file
-	Write-Output "SET ECHO ON;" | Out-File -Encoding UTF8 -Append $sql_file
-	Write-Output "SET SERVEROUTPUT ON" | Out-File -Encoding UTF8 -Append $sql_file
-	Write-Output "" | Out-File -Encoding UTF8 -Append $sql_file
-	Write-Output "@@chamador-status-$DefinitionName-$BuildNumber.sql" | Out-File -Encoding UTF8 -Append $sql_file	
-
-	Get-Content $temp_rollback_file | ForEach-Object {
-		$_ = $_.replace("\","/") 
-		Write-Output "@@rollback/$_" | Out-File -Encoding UTF8 -Append $sql_file
-	}
-
-	Write-Output "@@chamador-status-$DefinitionName-$BuildNumber.sql" | Out-File -Encoding UTF8 -Append $sql_file	
-	Write-Output "" | Out-File -Encoding UTF8 -Append $sql_file
-	Write-Output "/" | Out-File -Encoding UTF8 -Append $sql_file
-	Write-Output "QUIT" | Out-File -Encoding UTF8 -Append $sql_file
-	
-	Write-Output "######## $sql_file criado com sucesso!"
-}
  
 #Retornar o nome do arquivo
 function getFileName([string]$full_path){
@@ -408,7 +355,6 @@ function getFolderName([string]$full_path){
 createScriptCaller
 createStatusCheck
 createBackupPackageAndCaller
-createRollbackCaller
 
-Write-Output "################ Build $BuildNumber finalizado com sucesso #########################"
-Write-Output "######################## Fim do Build $BuildNumber #################################"
+Write-Output "################ Build finalizado com sucesso #########################"
+Write-Output "######################## Fim do Build #################################"
