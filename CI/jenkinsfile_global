@@ -7,8 +7,9 @@ pipeline {
     stages {
         stage('Pre Build') {
             steps {
-                echo ' Pre Building..' // VALIDATION
+                echo ' Verificando Enconding..' // VALIDATION
                 sh 'python3 ./devops/encoding-ci.py'
+                echo 'Encoding Verificado'
 
             }
         }
@@ -17,15 +18,16 @@ pipeline {
                 jdk "jdk-17" // JDK VERSION
             }
             steps {
-                echo 'Building..'
+                echo 'Criando geradores de pacotes..'
                 sh 'pwsh -File ./devops/gera-pacotes.ps1 -DefinitionName GeradorDePacotes' // SCRIPT GERADOR DE PACOTE
+                
             }
             post {
                 always {
                     archiveArtifacts artifacts: 'script/', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
                     archiveArtifacts artifacts: 'devops/', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
                     archiveArtifacts artifacts: '*.sql', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
-
+                echo 'Arquivos publicados para deploy'
               }
             }
         }
