@@ -20,8 +20,8 @@ pipeline {
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'chamador-*', fingerprint: true
-                    archiveArtifacts artifacts: 'script/', fingerprint: true
+                    archiveArtifacts: 'chamador-*', fingerprint: true
+                    archiveArtifacts: 'script/', fingerprint: true
             }
             }
         }
