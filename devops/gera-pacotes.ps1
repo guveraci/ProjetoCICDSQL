@@ -204,7 +204,7 @@ function copyFilesToFolders([string]$structure) {
 #Gera o arquivo chamador
 function createScriptCaller() {
 
-	$error = validateFiles($db_files)
+#	$error = validateFiles($db_files)
 	if ($error -eq 1){
 		Write-Output "######## Nao existe plano de rollback. Arquivo $rollback_file nao encontrado!"
 		return
