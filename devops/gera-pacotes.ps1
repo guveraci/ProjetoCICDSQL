@@ -51,7 +51,7 @@ function validateFiles([string]$file) {
 			return
 		}
 		
-		$file_row = $_.replace("/","\") 
+		$file_row = $_.replace("\","/") 
 
 		#valida comentario
 		if($_.length -gt 2){
