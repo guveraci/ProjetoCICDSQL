@@ -8,6 +8,7 @@ pipeline {
         stage('Pre Build') {
             steps {
                 echo ' Pre Building..' // VALIDATION
+                sh 'apt install python3 -y'
 
             }
         }
