@@ -2,7 +2,7 @@ Param
 (
     [Parameter(Mandatory = $true)]
     [String]$DefinitionName,
-    [String]$BuildNumber  = 1
+
 )
 ###test1
 Write-Output "########################### Inicio do Build $BuildNumber ###########################"
@@ -11,8 +11,8 @@ $getchilditem= Get-ChildItem script -Recurse -Name
 [array]::Reverse($getchilditem)
 $db_files="db_files.sql"
 $rollback_file="rollback.sql"
-$temp_db_files="temp-lista-exec-scripts-$DefinitionName-$BuildNumber.sql"
-$temp_rollback_file="temp-lista-exec-rollback-$DefinitionName-$BuildNumber.sql"
+$temp_db_files="temp-lista-exec-scripts-$DefinitionName.sql"
+$temp_rollback_file="temp-lista-exec-rollback-$DefinitionName.sql"
 
 
 #Valida se os arquivos DB_FILES.SQL e ROLLBACK.SQL existem
