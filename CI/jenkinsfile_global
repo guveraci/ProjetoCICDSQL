@@ -9,7 +9,6 @@ pipeline {
             steps {
                 echo ' Verificando Enconding..' // VALIDATION
                 sh 'python3 ./devops/encoding-ci.py'
-                echo 'Encoding Verificado'
 
             }
         }
@@ -23,11 +22,11 @@ pipeline {
                 
             }
             post {
+                echo 'Publicando arquivos para deploy...'
                 always {
                     archiveArtifacts artifacts: 'script/', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
                     archiveArtifacts artifacts: 'devops/', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
-                    archiveArtifacts artifacts: '*.sql', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
-                echo 'Arquivos publicados para deploy'
+                    archiveArtifacts artifacts: '*.sql', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS         
               }
             }
         }
