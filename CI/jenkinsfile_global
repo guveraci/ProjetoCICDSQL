@@ -21,7 +21,8 @@ pipeline {
             post {
                 always {
                     archiveArtifacts artifacts: '*.sql', fingerprint: true
-\                }
+                    archiveArtifacts artifacts: 'script/', fingerprint: true
+            }
             }
         }
         stage('Test') {
