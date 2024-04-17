@@ -110,7 +110,6 @@ function validateFiles([string]$file) {
 	}
 	
 	#Arquivo invalido, fim da execucao
-	Remove-Item $temp_file
 	Write-Error -Exception "O arquivo $file esta incorreto" -Message "Existem $erro linhas invalidas."
 	exit 1
 
