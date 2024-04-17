@@ -51,7 +51,7 @@ function validateFiles([string]$file) {
 			return
 		}
 		
-		$file_row = $_.replace("\","/") 
+		$file_row = $_.replace("/","\") 
 
 		#valida comentario
 		if($_.length -gt 2){
@@ -62,7 +62,7 @@ function validateFiles([string]$file) {
 		}	
 				
 		#Valida diretorios
-		if(-Not ($file_row.contains("script/db/"))){
+		if(-Not ($file_row.contains("\script\db\"))){
 			Write-Warning "######## Estrutura de diretorio incorreta: $file_row" 
 			$erro++
 			return
@@ -82,7 +82,7 @@ function validateFiles([string]$file) {
 			return
 		}		
 		
-		$file_row = $file_row.replace("script/db/","")
+		$file_row = $file_row.replace("script\db\","")
 
 		if($file -eq $rollback_file){
 			$temp_file = $temp_rollback_file
@@ -99,7 +99,7 @@ function validateFiles([string]$file) {
 
 		$quantity_temp_file++
 		foreach ($row in $getchilditem) {
-			$new_row = $row.replace("script/db/","")
+			$new_row = $row.replace("script\db\","")
 			if($_ -ceq $new_row){
 				$quantity_files++
 			}
@@ -188,7 +188,7 @@ function copyFilesToFolders([string]$structure) {
 
 	Set-Location $dir_root
 	Get-Content $temp_file | ForEach-Object {
-		$origin = "script/db/"+$_
+		$origin = "script\db\"+$_
 		$destin = $has_prefix+$_		
 		if($structure -eq "backup"){
 			$file_name = getFileName($destin)
