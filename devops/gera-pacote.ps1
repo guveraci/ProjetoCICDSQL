@@ -88,8 +88,6 @@ function validateFiles([string]$file) {
 	$quantity_files = 0
 	$quantity_temp_file = 0
 
-	Get-Content $temp_file | ForEach-Object {
-
 		$quantity_temp_file++
 		foreach ($row in $getchilditem) {
 			$new_row = $row.replace("resources\db\","")
@@ -115,7 +113,7 @@ function validateFiles([string]$file) {
 	Remove-Item $temp_file
 	Write-Error -Exception "O arquivo $file esta incorreto" -Message "Existem $erro linhas invalidas."
 	exit 1
-}
+
 
 #Criar a estrutura de pastas e subpastas, esta estrutura pode ser dos scripts executados, backup ou rollback 
 function createFoldersStructure([string]$structure){
