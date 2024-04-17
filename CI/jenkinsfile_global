@@ -49,5 +49,5 @@ pipeline {
                 echo 'Testing..' // SONAR E ETC
             }
         }
-    }   
+    ß   
 }
