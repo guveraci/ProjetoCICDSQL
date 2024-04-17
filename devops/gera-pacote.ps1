@@ -82,7 +82,7 @@ function validateFiles([string]$file) {
 			return
 		}		
 		
-		$file_row = $file_row.replace("2024\","")
+		$file_row = $file_row.replace("script\2024\","")
 
 		if($file -eq $rollback_file){
 			$temp_file = $temp_rollback_file
