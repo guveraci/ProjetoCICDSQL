@@ -43,10 +43,10 @@ pipeline {
                             }
                     }
             }
-        }
         stage('Test') {
             steps {
                 echo 'Testing..' // SONAR E ETC
             }
         } 
+    }
 }
