@@ -82,7 +82,7 @@ function validateFiles([string]$file) {
 			return
 		}		
 		
-		$file_row = $file_row.replace("script\db\","")
+		$file_row = $file_row.replace("script\db","")
 
 		if($file -eq $rollback_file){
 			$temp_file = $temp_rollback_file
@@ -99,7 +99,7 @@ function validateFiles([string]$file) {
 
 		$quantity_temp_file++
 		foreach ($row in $getchilditem) {
-			$new_row = $row.replace("script\db\","")
+			$new_row = $row.replace("script\db","")
 			if($_ -ceq $new_row){
 				$quantity_files++
 			}
