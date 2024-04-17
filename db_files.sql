@@ -1,2 +1,2 @@
 -- Teste
-script\resources\db\Tables\teste.sql
+script/resources/db/Tables/teste.sql
