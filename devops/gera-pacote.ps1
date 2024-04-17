@@ -108,11 +108,6 @@ function validateFiles([string]$file) {
 		Write-Output "######## $file validado com sucesso!"
 		return 0
 	}
-	
-	#Arquivo invalido, fim da execucao
-	Write-Error -Exception "O arquivo $file esta incorreto" -Message "Existem $erro linhas invalidas."
-	exit 1
-
 
 #Criar a estrutura de pastas e subpastas, esta estrutura pode ser dos scripts executados, backup ou rollback 
 function createFoldersStructure([string]$structure){
