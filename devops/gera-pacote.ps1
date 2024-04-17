@@ -82,7 +82,7 @@ function validateFiles([string]$file) {
 			return
 		}		
 		
-		$file_row = $file_row.replace("script\db\","")
+		$file_row = $file_row.replace("script/db/","")
 
 		if($file -eq $rollback_file){
 			$temp_file = $temp_rollback_file
