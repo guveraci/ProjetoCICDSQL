@@ -99,7 +99,7 @@ function validateFiles([string]$file) {
 
 		$quantity_temp_file++
 		foreach ($row in $getchilditem) {
-			$new_row = $row.replace("2024\","")
+			$new_row = $row.replace("script\2024\","")
 			if($_ -ceq $new_row){
 				$quantity_files++
 			}
