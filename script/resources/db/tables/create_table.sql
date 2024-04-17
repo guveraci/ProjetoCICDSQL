@@ -1,4 +1,4 @@
--- Teste
+-- Teste Create
 create table teste.sgo.teste
 (
   COD NUMBER,
