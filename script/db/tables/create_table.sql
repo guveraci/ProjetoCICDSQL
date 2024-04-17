@@ -1,5 +1,5 @@
---Teste
-create table SGO.TESTE
+-- Teste
+create table SGOTeste
 (
   COD NUMBER,
   DESCRICAO VARCHAR
