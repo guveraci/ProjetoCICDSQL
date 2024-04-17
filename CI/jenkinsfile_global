@@ -12,11 +12,16 @@ pipeline {
         }
         stage('Build') {
             tools {
-                jdk "jdk-21" // the name you have given the JDK installation using the JDK manager (Global Tool Configuration)
+                jdk "jdk-17" // the name you have given the JDK installation using the JDK manager (Global Tool Configuration)
             }
             steps {
                 echo 'Building..'
                 sh 'pwsh -File ./devops/gera-pacotes.ps1 -DefinitionName GeradorDePacotes'
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'script/**' fingerprint: true
+                }
             }
         }
         stage('Test') {
