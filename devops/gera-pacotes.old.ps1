@@ -1,18 +1,21 @@
 Param
 (
     [Parameter(Mandatory = $true)]
-    [String]$DefinitionName
-
+    [String]$DefinitionName,
+    [String]$BuildNumber  = 1
 )
 ###test1
-Write-Output "########################### Inicio do Build ###########################"
+Write-Output "########################### Inicio do Build $BuildNumber ###########################"
 $dir_root = Get-Location
-$getchilditem= Get-ChildItem script -Recurse -Name
+$getchilditem= Get-ChildItem src -Recurse -Name
 [array]::Reverse($getchilditem)
 $db_files="db_files.sql"
-$temp_db_files="temp-lista-exec-scripts-$DefinitionName.sql"
+$rollback_file="rollback.sql"
+$temp_db_files="temp-lista-exec-scripts-$DefinitionName-$BuildNumber.sql"
+$temp_rollback_file="temp-lista-exec-rollback-$DefinitionName-$BuildNumber.sql"
 
-#Valida se os arquivos DB_FILES.SQL
+
+#Valida se os arquivos DB_FILES.SQL e ROLLBACK.SQL existem
 #Retorna 1 quando o arquivo nao existe 
 #Retorna 0 quando o arquivo existe 
 function fileExist([string]$myfile) {
@@ -29,7 +32,7 @@ function fileExist([string]$myfile) {
 	return 1
 }
 
-#Valida os arquivos DB_FILES.SQL
+#Valida os arquivos DB_FILES.SQL e ROLLBACK.SQL
 #Retorna 1 quando o arquivo é invalido
 function validateFiles([string]$file) {
 
@@ -59,7 +62,7 @@ function validateFiles([string]$file) {
 		}	
 				
 		#Valida diretorios
-		if(-Not ($file_row.contains("script\resources\db\"))){
+		if(-Not ($file_row.contains("src\main\resources\db\"))){
 			Write-Warning "######## Estrutura de diretorio incorreta: $file_row" 
 			$erro++
 			return
@@ -79,7 +82,11 @@ function validateFiles([string]$file) {
 			return
 		}		
 		
-		$file_row = $file_row.replace("script\resources\db\","")
+		$file_row = $file_row.replace("src\main\resources\db\","")
+
+		if($file -eq $rollback_file){
+			$temp_file = $temp_rollback_file
+		}
 
 		Write-Output "$file_row" | Out-File -Encoding UTF8 -Append $temp_file
 	}
@@ -88,9 +95,11 @@ function validateFiles([string]$file) {
 	$quantity_files = 0
 	$quantity_temp_file = 0
 
+	Get-Content $temp_file | ForEach-Object {
+
 		$quantity_temp_file++
 		foreach ($row in $getchilditem) {
-			$new_row = $row.replace("resources\db\","")
+			$new_row = $row.replace("main\resources\db\","")
 			if($_ -ceq $new_row){
 				$quantity_files++
 			}
@@ -108,11 +117,17 @@ function validateFiles([string]$file) {
 		Write-Output "######## $file validado com sucesso!"
 		return 0
 	}
+	
+	#Arquivo invalido, fim da execucao
+	Remove-Item $temp_file
+	Write-Error -Exception "O arquivo $file esta incorreto" -Message "Existem $erro linhas invalidas."
+	exit 1
+}
 
 #Criar a estrutura de pastas e subpastas, esta estrutura pode ser dos scripts executados, backup ou rollback 
 function createFoldersStructure([string]$structure){
 
-	if(-Not ($structure -eq "script" -or $structure -eq "backup")){
+	if(-Not ($structure -eq "script" -or $structure -eq "backup" -or $structure -eq "rollback")){
 		Write-Error -Exception "Erro na criacao de pastas" -Message "######## Nao e possivel criar as pastas, estrutura invalida"
 		exit 1
 	}
@@ -125,7 +140,10 @@ function createFoldersStructure([string]$structure){
 		$dir_temp = "$dir_root\backup"
 		$temp_file = $temp_db_files
 	}
-
+	if($structure -eq "rollback"){
+		$dir_temp = "$dir_root\rollback"
+		$temp_file = $temp_rollback_file
+	}
 	New-Item -ErrorAction Ignore -ItemType directory -Path $dir_temp | Out-Null	
 
 	Set-Location $dir_root
@@ -151,7 +169,7 @@ function createFoldersStructure([string]$structure){
 #Copiar para a estrutura de pastas os arquivos SQL que serao executados
 function copyFilesToFolders([string]$structure) {
 
-	if(-Not ($structure -eq "script" -or $structure -eq "backup")){
+	if(-Not ($structure -eq "script" -or $structure -eq "rollback" -or $structure -eq "backup")){
 		Write-Error -Exception "Erro na copia dos arquivos " -Message "######## Nao e possivel copiar arquivos, estrutura invalida"
 		exit 1
 	}
@@ -163,10 +181,14 @@ function copyFilesToFolders([string]$structure) {
 		$temp_file = $temp_db_files
 		$has_prefix = "backup\"
 	}
+	if($structure -eq "rollback"){
+		$temp_file = $temp_rollback_file
+		$has_prefix = "rollback\"
+	}
 
 	Set-Location $dir_root
 	Get-Content $temp_file | ForEach-Object {
-		$origin = "script\resources\db\"+$_
+		$origin = "src\main\resources\db\"+$_
 		$destin = $has_prefix+$_		
 		if($structure -eq "backup"){
 			$file_name = getFileName($destin)
@@ -183,26 +205,29 @@ function copyFilesToFolders([string]$structure) {
 function createScriptCaller() {
 
 	$error = validateFiles($db_files)
-
+	if ($error -eq 1){
+		Write-Output "######## Nao existe plano de rollback. Arquivo $rollback_file nao encontrado!"
+		return
+	}	
 	createFoldersStructure("script");
 	copyFilesToFolders("script"); 
 
 	Set-Location $dir_root
-	$sql_file="chamador-$DefinitionName.sql"
+	$sql_file="chamador-$DefinitionName-$BuildNumber.sql"
 
 	Write-Output " " | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "SET DEFINE OFF" | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "SET ECHO ON;" | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "SET SERVEROUTPUT ON" | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "" | Out-File -Encoding UTF8 -Append $sql_file
-	Write-Output "@@chamador-status-$DefinitionName.sql" | Out-File -Encoding UTF8 -Append $sql_file	
+	Write-Output "@@chamador-status-$DefinitionName-$BuildNumber.sql" | Out-File -Encoding UTF8 -Append $sql_file	
 
 	Get-Content $temp_db_files | ForEach-Object {
 		$_ = $_.replace("\","/") 
 		Write-Output "@@script/$_" | Out-File -Encoding UTF8 -Append $sql_file
 	}
 	
-	Write-Output "@@chamador-status-$DefinitionName.sql" | Out-File -Encoding UTF8 -Append $sql_file	
+	Write-Output "@@chamador-status-$DefinitionName-$BuildNumber.sql" | Out-File -Encoding UTF8 -Append $sql_file	
 	Write-Output "" | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "/" | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "QUIT" | Out-File -Encoding UTF8 -Append $sql_file
@@ -214,7 +239,7 @@ function createScriptCaller() {
 #Gera o arquivo chamador-status
 function createStatusCheck() {
 
-	$sql_file="chamador-status-$DefinitionName.sql"
+	$sql_file="chamador-status-$DefinitionName-$BuildNumber.sql"
 	
 	Write-Output " " | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "SET SQLBLANKLINES ON;" | Out-File -Encoding UTF8 -Append $sql_file
@@ -261,11 +286,27 @@ function createBackupPackageAndCaller() {
 	
 	Write-Output " " | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "SET SERVEROUTPUT ON;" | Out-File -Encoding UTF8 -Append $sql_file
-	Write-Output "SET DEFINE OFF" | Out-File -Encoding UTF8 -Append $sql_file
-	Write-Output "SET HEADING OFF" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "SET PAGESIZE 0" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "SET LONG 1000000000" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "SET LONGCHUNKSIZE 1000000000" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "SET LINESIZE 32767" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "SET TRIMSPOOL ON" | Out-File -Encoding UTF8 -Append $sql_file
 	Write-Output "SET FEEDBACK OFF" | Out-File -Encoding UTF8 -Append $sql_file
-	Write-Output "SET TIMING OFF" | Out-File -Encoding UTF8 -Append $sql_file	
+	Write-Output "SET HEADING OFF" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "SET ECHO OFF" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "SET TIMING OFF" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "SET VERIFY OFF" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "SET DEFINE OFF" | Out-File -Encoding UTF8 -Append $sql_file
+    Write-Output "begin
+   dbms_metadata.set_transform_param (dbms_metadata.session_transform, 'SQLTERMINATOR', true);
+   dbms_metadata.set_transform_param (dbms_metadata.session_transform, 'PRETTY', true);
+end;
+/" | Out-File -Encoding UTF8 -Append $sql_file
+
 	Write-Output "" | Out-File -Encoding UTF8 -Append $sql_file
+
+
+
 
 	Get-Content $temp_db_files | ForEach-Object {
 
@@ -273,8 +314,8 @@ function createBackupPackageAndCaller() {
 		$_ = $_.replace("\","/") 
 		
 		Write-Output "SPOOL 'backup/$_'" | Out-File -Encoding UTF8 -Append $sql_file		
-		Write-Output "SELECT text FROM user_source WHERE (type='PROCEDURE' OR type='PACKAGE' OR type='PACKAGE BODY') AND name=upper('$file_name') ORDER BY line;" | Out-File -Encoding UTF8 -Append $sql_file
-		Write-Output "SPOOL OFF;" | Out-File -Encoding UTF8 -Append $sql_file
+       Write-Output "SELECT DBMS_METADATA.GET_DDL(REPLACE(a.OBJECT_TYPE,CHR(32),'_'),a.OBJECT_NAME,a.OWNER) as script FROM dba_objects a WHERE OBJECT_NAME=replace(upper('$file_name'),'TRON2000_','') and  OWNER = 'TRON2000' ORDER BY a.OBJECT_TYPE , a.OBJECT_NAME ,a.OWNER;" | Out-File -Encoding UTF8 -Append $sql_file		
+       Write-Output "SPOOL OFF;" | Out-File -Encoding UTF8 -Append $sql_file
 		Write-Output "" | Out-File -Encoding UTF8 -Append $sql_file
 		Write-Output "######## Script SQL (para backup) $_ criado com sucesso"
 	}	
@@ -302,6 +343,43 @@ function createBackupPackageAndCaller() {
 	Write-Output "QUIT" | Out-File -Encoding UTF8 -Append $sql_file2
 	
 	Write-Output "######## $sql_file2 criado com sucesso!"
+}
+
+
+#Gera o arquivo chamador-rollback
+function createRollbackCaller() {
+
+	$error = validateFiles($rollback_file)
+	if ($error -eq 1){
+		Write-Output "######## Nao existe plano de rollback. Arquivo $rollback_file nao encontrado!"
+		return
+	}
+
+	createFoldersStructure("rollback");
+	copyFilesToFolders("rollback");	
+
+	Set-Location $dir_root
+	$sql_file="chamador-rollback-$DefinitionName-$BuildNumber.sql"
+	Write-Output "######## Existe um plano de rollback. Criando script de rollback"
+
+	Write-Output " " | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "SET DEFINE OFF" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "SET ECHO ON;" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "SET SERVEROUTPUT ON" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "@@chamador-status-$DefinitionName-$BuildNumber.sql" | Out-File -Encoding UTF8 -Append $sql_file	
+
+	Get-Content $temp_rollback_file | ForEach-Object {
+		$_ = $_.replace("\","/") 
+		Write-Output "@@rollback/$_" | Out-File -Encoding UTF8 -Append $sql_file
+	}
+
+	Write-Output "@@chamador-status-$DefinitionName-$BuildNumber.sql" | Out-File -Encoding UTF8 -Append $sql_file	
+	Write-Output "" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "/" | Out-File -Encoding UTF8 -Append $sql_file
+	Write-Output "QUIT" | Out-File -Encoding UTF8 -Append $sql_file
+	
+	Write-Output "######## $sql_file criado com sucesso!"
 }
  
 #Retornar o nome do arquivo
@@ -347,6 +425,7 @@ function getFolderName([string]$full_path){
 createScriptCaller
 createStatusCheck
 createBackupPackageAndCaller
+createRollbackCaller
 
-Write-Output "################ Build finalizado com sucesso #########################"
-Write-Output "######################## Fim do Build #################################"
+Write-Output "################ Build $BuildNumber finalizado com sucesso #########################"
+Write-Output "######################## Fim do Build $BuildNumber #################################"
