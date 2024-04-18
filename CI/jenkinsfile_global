@@ -25,8 +25,8 @@ pipeline {
             jdk "jdk-17" // the name you have given the JDK installation in Global Tool Configuration
         }
         steps {
-            'sonar-scanner \
-            -Dsonar.projectKey=Teste_SQL \
+            sonar-scanner 
+            '-Dsonar.projectKey=Teste_SQL \
             -Dsonar.sources=develop/ \
             -Dsonar.host.url=http://localhost:9000 \
             -Dsonar.token=sqp_b061bbe209d39e7acd5ef55d0c33a20e546f92ad'
