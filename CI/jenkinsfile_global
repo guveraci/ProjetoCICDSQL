@@ -12,6 +12,12 @@ pipeline {
 
             }
         }
+        stage('SonarQube analysis') {
+            def scannerHome = tool 'SonarScanner 4.0';
+            withSonarQubeEnv('Sonar_Scanner') { // If you have configured more than one global server connection, you can specify its name
+            sh "${scannerHome}/bin/sonar-scanner"
+            }
+        }
         stage('Build') {
             tools {
                 jdk "jdk-17" // JDK VERSION
@@ -19,7 +25,6 @@ pipeline {
             steps {
                 echo 'Criando geradores de pacotes..'
                 sh 'pwsh -File ./devops/gera-pacotes.ps1 -DefinitionName GeradorDePacotes' // SCRIPT GERADOR DE PACOTE
-                
             }
             post {
                 always {
@@ -35,7 +40,7 @@ pipeline {
             }
             steps {
                 script {
-                        sh 'apache-maven-3.9.6/bin/mvn clean package sonar-scanner \
+                        mvn 'clean package sonar-scanner \
                         -Dsonar.projectKey=Teste_SQL \
                         -Dsonar.sources=. \
                         -Dsonar.host.url=http://localhost:9000 \
