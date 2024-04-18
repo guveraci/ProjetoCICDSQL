@@ -26,7 +26,7 @@ pipeline {
             jdk "jdk-17" // the name you have given the JDK installation in Global Tool Configuration
         }
         environment {
-            scannerhome =   tool ${SONAR_SCANNER}
+            scannerhome =   tool "${SONAR_SCANNER}"
         }
         steps {
             withSonarQubeEnv("${SONAR_ENVIRONMENT}") {// If you have configured more than one global server connection, you can specify its name as configured in Jenkins
