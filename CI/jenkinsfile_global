@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+    }
+    stages {
+        stage('Pre Build') {
+            steps {
+                echo ' Verificando Enconding..' // VALIDATION
+                sh 'python3 ./devops/encoding-ci.py'
+
+            }
+        }
+        stage('Build') {
+            tools {
+                jdk "jdk-17" // JDK VERSION
+            }
+            steps {
+                echo 'Criando geradores de pacotes..'
+                sh 'pwsh -File ./devops/gera-pacotes.ps1 -DefinitionName GeradorDePacotes' // SCRIPT GERADOR DE PACOTE
+                
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'script/', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
+                    archiveArtifacts artifacts: 'devops/', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
+                    archiveArtifacts artifacts: '*.sql', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS         
+              }
+            }
+        }
+        stage('Pos Build') {
+            tools {
+                jdk "jdk-17" // JDK VERSION
+            }
+            steps {
+                script {
+                        sh 'apache-maven-3.9.6/bin/mvn clean package sonar-scanner \
+                        -Dsonar.projectKey=Teste_SQL \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.token=sqp_3fba5fbc9cfcf8e9b5653b600514c9434e67b5f5'
+                            }
+                    }
+            }
+        stage('Test') {
+            steps {
+                echo 'Testing..' // SONAR E ETC
+            }
+        } 
+    }
+}
