@@ -64,6 +64,7 @@ pipeline {
                 script {
                         load 'CD/SGO/jenkinsfile_OwnerTeste'
                     }
-        }
+            }
+        }   
     }
 }
