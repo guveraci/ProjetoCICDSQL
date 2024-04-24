@@ -8,7 +8,7 @@ pipeline {
         timestamps()
     }
 
-    enviroment {
+    environment {
         ORACLE_HOME = "PATH"
         PATH = "$ORACLE_HOME/bin:$PATH"
     }
