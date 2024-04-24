@@ -16,13 +16,14 @@ pipeline {
     stages {
         stage('Awaiting Approval') {
             steps {
-                script {
+/*                 script {
                     if (env.BUILD_USER IN ['helton'])
                     input message: 'Por favor aprovar o Deploy.', ok: 'Aprovar'
                 } else {
                     echo 'Você não tem permissão para aprovar o Deploy.'
                     error('Acesso negado para aprovar o deploy.')
-                }
+                } */
+                echo "aprovando cd"
             }
         }
 
