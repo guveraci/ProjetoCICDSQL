@@ -24,7 +24,6 @@ pipeline {
                     error('Acesso negado para aprovar o deploy.')
                 } */
                 input 'Por favor aprovar o Deploy.'
-                echo "aprovando cd"
             }
         }
 
@@ -40,6 +39,7 @@ pipeline {
         stage('Artifact Directory Validation') {
             steps {
                 //to do
+                sh 'cd ../${BUILD_NUMBER}'
                 echo "validando artefato"
             }
         }
@@ -47,8 +47,12 @@ pipeline {
         stage('Base Validation') {
             steps {
                 //Executar script para validar nome da base
-                sh 'cd ../${BUILD_NUMBER}'
-                sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @select_globalname.sql'
+                def dir = '/script/Tables/'
+                    // Executando o comando de listagem de arquivos
+                    sh "echo 'Listando arquivos no diretório: $dir'"
+                    sh "ls -l ${dir}"
+                //sh 'cd ../script/Tables/'
+                //sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @select_globalname.sql'
             }
         }
 
