@@ -7,16 +7,16 @@ pipeline {
         timeout(time: 30, unit: 'MINUTES')
     }
 
-    enviroment {
-        ORACLE_HOME = "PATH"
-        PATH = "$ORACLE_HOME/bin:$PATH"
-    }
+    // enviroment {
+    //     ORACLE_HOME = "PATH"
+    //     PATH = "$ORACLE_HOME/bin:$PATH"
+    // }
 
-    parameters {
-        booleanParam(defaultValue: false, description: 'Deploy Dev', name: 'DeployDev')
-        booleanParam(defaultValue: false, description: 'Deploy Hom', name: 'DeployHom')
-        booleanParam(defaultValue: false, description: 'Deploy Prod', name: 'DeployProd')
-    }
+    // parameters {
+    //     booleanParam(defaultValue: false, description: 'Deploy Dev', name: 'DeployDev')
+    //     booleanParam(defaultValue: false, description: 'Deploy Hom', name: 'DeployHom')
+    //     booleanParam(defaultValue: false, description: 'Deploy Prod', name: 'DeployProd')
+    // }
 
     stages {
 /*         stage('Awaiting Approval') {
