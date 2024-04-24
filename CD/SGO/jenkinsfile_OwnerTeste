@@ -38,15 +38,6 @@ pipeline {
 
         stage('Artifact Directory Validation') {
             steps {
-                //to do
-                //sh 'cd ../${BUILD_NUMBER}'
-                echo "validando artefato"
-            }
-        }
-
-        stage('Base Validation') {
-            steps {
-                //Executar script para validar nome da base
                 dir('./devops/'){
                     script {
                         if (fileExists('.')) {
@@ -54,12 +45,18 @@ pipeline {
                             sh "ls -la"
                         } else {
                             echo "Diretório não encontrado."
+                        }
                     }
                 }
-                // Executando o comando de listagem de arquivos
+            }
+        }
+
+        stage('Base Validation') {
+            steps {
+                //Executar script para validar nome da base
+                                // Executando o comando de listagem de arquivos
                    //sh 'cd ../script/Tables/'
-                //sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @select_globalname.sql'
-                }
+                //sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @select_globalname.sql'     
             }
         }
 
