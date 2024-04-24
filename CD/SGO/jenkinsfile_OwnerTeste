@@ -19,7 +19,7 @@ pipeline {
     }
 
     stages {
-        stage('Awaiting Approval') {
+/*         stage('Awaiting Approval') {
             steps {
                 script {
                     if (env.BUILD_USER IN ['admin', 'user_teste'])
@@ -29,7 +29,7 @@ pipeline {
                     error('Acesso negado para aprovar o deploy.')
                 }
             }
-        }
+        }  */
 
         // stage('Security pre-deploy') {
         //     steps {
