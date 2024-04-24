@@ -59,12 +59,5 @@ pipeline {
                 echo 'Testing..' // SONAR E ETC
             }
         }
-        stage('Continuous Deployment') {
-            steps {
-                script {
-                        load '$WORKSPACE/CD/SGO/jenkinsfile_OwnerTeste'
-                    }
-            }
-        }
     }
 }
