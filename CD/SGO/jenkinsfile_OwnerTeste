@@ -47,7 +47,7 @@ pipeline {
         stage('Base Validation') {
             steps {
                 //Executar script para validar nome da base
-                dir('/script/Tables/'){
+                dir('./devops/'){
                     script {
                         if (fileExists('.')) {
                             echo "Listando arquivos no diretório atual."
@@ -62,7 +62,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Generate Backup') {
             steps {
                 //Instalar Powershell Core no server
