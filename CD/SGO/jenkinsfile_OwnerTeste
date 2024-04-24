@@ -23,6 +23,7 @@ pipeline {
                     echo 'Você não tem permissão para aprovar o Deploy.'
                     error('Acesso negado para aprovar o deploy.')
                 } */
+                input 'Por favor aprovar o Deploy.', ok: 'Aprovar'
                 echo "aprovando cd"
             }
         }
