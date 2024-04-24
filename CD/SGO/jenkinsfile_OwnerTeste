@@ -42,7 +42,7 @@ pipeline {
 
         stage('Artifact Directory Validation') {
             steps {
-                //to do
+                echo 'Testando ...'
             }
         }
 
