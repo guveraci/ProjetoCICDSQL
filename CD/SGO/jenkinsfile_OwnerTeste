@@ -1,4 +1,4 @@
-//thisBranch = env.BRANCH_NAME
+thisBranch = env.BRANCH_NAME
 
 pipeline {
     agent any
@@ -13,12 +13,6 @@ pipeline {
         PATH = "$ORACLE_HOME/bin:$PATH"
     }
 
-/*     parameters {
-        booleanParam(defaultValue: false, description: 'Deploy Dev', name: 'DeployDev')
-        booleanParam(defaultValue: false, description: 'Deploy Hom', name: 'DeployHom')
-        booleanParam(defaultValue: false, description: 'Deploy Prod', name: 'DeployProd')
-    } */
-
     stages {
         stage('Awaiting Approval') {
             steps {
@@ -32,14 +26,14 @@ pipeline {
             }
         }
 
-        // stage('Security pre-deploy') {
-        //     steps {
-        //         script{
-        //             secPreDeploy()
-        //         }
-        //         sh 'echo "validação de segurança pré-cd"'
-        //     }
-        // }
+        stage('Security pre-deploy') {
+            steps {
+                //script{
+                //    secPreDeploy()
+                //}
+                sh 'echo "validação de segurança pré-cd"'
+            }
+        }
 
         stage('Artifact Directory Validation') {
             steps {
@@ -55,10 +49,11 @@ pipeline {
             }
         }
 
-/*         stage('Generate Backup') {
+        stage('Generate Backup') {
             steps {
                 //Instalar Powershell Core no server
-                sh '/usr/bin/pwsh -File ./script_backup.ps1'
+                //sh '/usr/bin/pwsh -File ./script_backup.ps1'
+                echo "Gerando backup"
             }
         }
 
@@ -66,18 +61,12 @@ pipeline {
             steps {
                 //Criar o artefato
                 //compactar .zip
-                sh 'zip -r backup.zip /path/backup'
+                //sh 'zip -r backup.zip /path/backup'
+                echo "Gerando artifact do backup"
             }
-        } */
+        }
 
         stage('Deploy') { 
-/*             when {
-                anyOf {
-                    expression {params.DeployDev}
-                    expression {params.DeployHom}
-                    expression {params.DeployProd}
-                }
-            } */
 /*             steps {
                 sh 'cd ../${BUILD_NUMBER}'
                 script{
@@ -92,9 +81,9 @@ pipeline {
             } */
             steps {
                 //executar chamadores para aplicar os sql
-                @script/Tables/Teste2.sql
                 //sh 'cd ../${BUILD_NUMBER}'
-                sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @script/Tables/Teste2.sql'
+                //sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @script/Tables/Teste2.sql'
+                echo "Aplicando alterações na base"
             }
         }
 
@@ -112,22 +101,23 @@ pipeline {
                 }
             } */
             steps {
-                sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @script/script.sql'
+                //sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @script/script.sql'
+                echo "validando objetos alterados"
             }
         }
 
-/*         stage('Security post-deploy') {
+        stage('Security post-deploy') {
             steps {
-                script{
-                    secPostDeploy()
-                }
-                sh 'echo "Validação de segurança pós-CD"'
+                //script{
+                //    secPostDeploy()
+                //}
+                echo "Validação de segurança pós-CD"
             }
-        } */
+        }
 
-/*         stage('Notification') {
+        stage('Notification') {
             steps {
-                script {
+                /* script {
                     if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
                         emailext (
                             to: 'hpmsilva@mapfre.com.br',
@@ -143,9 +133,9 @@ pipeline {
                             mimeType: 'text/html'
                         )
                     }
-                }
-
+                } */
+                echo "enviando relatório"
             }
-        } */
+        }
     }
 }
