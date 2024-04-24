@@ -59,13 +59,12 @@ pipeline {
                 echo 'Testing..' // SONAR E ETC
             }
         }
-/*        stage('Continuous Deployment') {
+        stage('Continuous Deployment') {
             steps {
                 script {
                         load 'CD/SGO/jenkinsfile_OwnerTeste'
                     }
             }
         }
-*/ 
     }
 }
