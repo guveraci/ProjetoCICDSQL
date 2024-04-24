@@ -46,49 +46,49 @@ pipeline {
             }
         }
 
-        stage('Base Validation') {
-            steps {
-                //Executar script para validar nome da base
-                sh 'cd ../${BUILD_NUMBER}'
-                sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @select_globalname.sql'
-            }
-        }
+//         stage('Base Validation') {
+//             steps {
+//                 //Executar script para validar nome da base
+//                 sh 'cd ../${BUILD_NUMBER}'
+//                 sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @select_globalname.sql'
+//             }
+//         }
 
-/*         stage('Generate Backup') {
-            steps {
-                //Instalar Powershell Core no server
-                sh '/usr/bin/pwsh -File ./script_backup.ps1'
-            }
-        }
+// /*         stage('Generate Backup') {
+//             steps {
+//                 //Instalar Powershell Core no server
+//                 sh '/usr/bin/pwsh -File ./script_backup.ps1'
+//             }
+//         }
 
-        stage('Generate artifact from backup') {
-            steps {
-                //Criar o artefato
-                //compactar .zip
-                sh 'zip -r backup.zip /path/backup'
-            }
-        } */
+//         stage('Generate artifact from backup') {
+//             steps {
+//                 //Criar o artefato
+//                 //compactar .zip
+//                 sh 'zip -r backup.zip /path/backup'
+//             }
+//         } */
 
-        stage('Deploy') { 
-/*             when {
-                anyOf {
-                    expression {params.DeployDev}
-                    expression {params.DeployHom}
-                    expression {params.DeployProd}
-                }
-            } */
-            steps {
-                //executar chamadores para aplicar os sql
-                sh 'cd ../${BUILD_NUMBER}'
-                sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @chamador-*.sql'
-            }
-        }
+//         stage('Deploy') { 
+// /*             when {
+//                 anyOf {
+//                     expression {params.DeployDev}
+//                     expression {params.DeployHom}
+//                     expression {params.DeployProd}
+//                 }
+//             } */
+//             steps {
+//                 //executar chamadores para aplicar os sql
+//                 sh 'cd ../${BUILD_NUMBER}'
+//                 sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @chamador-*.sql'
+//             }
+//         }
 
-        stage('Object Validation') {
-            steps {
-                sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @script/script.sql'
-            }
-        }
+//         stage('Object Validation') {
+//             steps {
+//                 sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @script/script.sql'
+//             }
+//         }
 
 /*         stage('Security post-deploy') {
             steps {
@@ -99,7 +99,7 @@ pipeline {
             }
         } */
 
-        stage('Notification') {
+/*         stage('Notification') {
             steps {
                 script {
                     if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
@@ -120,6 +120,6 @@ pipeline {
                 }
 
             }
-        }
+        } */
     }
 }
