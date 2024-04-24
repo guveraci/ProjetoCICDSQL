@@ -39,7 +39,7 @@ pipeline {
         stage('Artifact Directory Validation') {
             steps {
                 //to do
-                sh 'cd ../${BUILD_NUMBER}'
+                //sh 'cd ../${BUILD_NUMBER}'
                 echo "validando artefato"
             }
         }
@@ -47,15 +47,22 @@ pipeline {
         stage('Base Validation') {
             steps {
                 //Executar script para validar nome da base
-                def dir = '/script/Tables/'
-                    // Executando o comando de listagem de arquivos
-                    sh "echo 'Listando arquivos no diretório: $dir'"
-                    sh "ls -l ${dir}"
-                //sh 'cd ../script/Tables/'
+                dir('/script/Tables/'){
+                    script {
+                        if (fileExists('.')) {
+                            echo "Listando arquivos no diretório atual."
+                            sh "ls -la"
+                        } else {
+                            echo "Diretório não encontrado."
+                    }
+                }
+                // Executando o comando de listagem de arquivos
+                   //sh 'cd ../script/Tables/'
                 //sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @select_globalname.sql'
+                }
             }
         }
-
+        
         stage('Generate Backup') {
             steps {
                 //Instalar Powershell Core no server
