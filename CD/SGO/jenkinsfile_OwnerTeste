@@ -44,7 +44,7 @@ pipeline {
                         }
                     }
                 }
-                dir('/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/script/'){
+                dir('/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/script/Tables'){
                     script {
                         if (fileExists('.')) {
                             echo "Listando arquivos no diretório atual."
@@ -70,7 +70,7 @@ pipeline {
         stage('Base Validation') {
             steps {
                 //Executar script para validar nome da base
-                sh 'cd ./devops/'
+                sh 'cd /var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/'
                 sh 'sqlplus system/Admin@123@localhost:1521 @select_globalname.sql'
                 echo 'validando a base'     
             }
@@ -89,7 +89,7 @@ pipeline {
             steps {
                 //Criar o artefato
                 //compactar .zip
-                //sh 'zip -r backup.zip /backup/'
+                //sh 'zip -r backup.zip /var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/backup'
                 echo "Gerando artifact do backup"
             }
         }
