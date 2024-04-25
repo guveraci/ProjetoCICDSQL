@@ -34,7 +34,7 @@ pipeline {
 
         stage('Artifact Directory Validation') {
             steps {
-                dir('./devops/'){
+                dir('/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/'){
                     script {
                         if (fileExists('.')) {
                             echo "Listando arquivos no diretório atual."
@@ -44,7 +44,7 @@ pipeline {
                         }
                     }
                 }
-                dir('./bd/resources/script/Tables'){
+                dir('/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/script/'){
                     script {
                         if (fileExists('.')) {
                             echo "Listando arquivos no diretório atual."
@@ -54,7 +54,7 @@ pipeline {
                         }
                     }
                 }
-                dir('/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main'){
+                dir('/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/'){
                     script {
                         if (fileExists('.')) {
                             echo "Listando arquivos no diretório atual."
@@ -79,7 +79,8 @@ pipeline {
         stage('Generate Backup') {
             steps {
                 //Instalar Powershell Core no server
-                //sh '/usr/bin/pwsh -File ./chamador-backup-GeradorDePacotes.ps1'
+                sh 'cd /var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/'
+                //sh '/usr/bin/pwsh -File chamador-backup-GeradorDePacotes.ps1'
                 echo "Gerando backup"
             }
         }
@@ -108,7 +109,7 @@ pipeline {
             } */
             steps {
                 //executar chamadores para aplicar os sql
-                //sh 'cd ../${BUILD_NUMBER}'
+                //sh 'cd /var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/'
                 //sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @chamador-GeradorDePacotes-1.sql'
                 echo "Aplicando alterações na base"
             }
@@ -128,7 +129,8 @@ pipeline {
                 }
             } */
             steps {
-                //sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @script/script.sql'
+                //sh 'cd /var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/script/'
+                //sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @script.sql'
                 echo "validando objetos alterados"
             }
         }
