@@ -9,10 +9,11 @@ pipeline {
     }
 
     environment {
-        ORACLE_HOME     = "/opt/oracle/instantclient_19_22"
-        PATH            = "$ORACLE_HOME:$PATH"
-        LD_LIBRARY_PATH = "$ORACLE_HOME/lib"
-        TNS_ADMIN       = "$ORACLE_HOME/network/admin"
+        ORACLE_HOME       = "/opt/oracle/instantclient_19_22"
+        PATH              = "$ORACLE_HOME:$PATH"
+        LD_LIBRARY_PATH   = "$ORACLE_HOME/lib"
+        TNS_ADMIN         = "$ORACLE_HOME/network/admin"
+        DB_CONNECT_STRING = 'system/Admin@123@localhost:1521@ORCLCDB'
     }
 
     stages {
@@ -90,7 +91,7 @@ pipeline {
             steps {
                 //Executar script para validar nome da base
                 //sh 'cd /var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/'
-                sh "$ORACLE_HOME/sqlplus -S system/Admin@123@localhost:1521 @/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/select_globalname.sql"
+                sh "$ORACLE_HOME/sqlplus -S $DB_CONNECT_STRING @/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/select_globalname.sql"
                 //sh '${ORACLE_HOME}/sqlplus system/Admin@123@localhost:1521 @./var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/select_globalname.sql'
                 echo 'validando a base'
             }
