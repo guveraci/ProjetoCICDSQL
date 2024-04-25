@@ -64,6 +64,16 @@ pipeline {
                         }
                     }
                 }
+                dir('./devops@tmp'){
+                    script {
+                        if (fileExists('.')) {
+                            echo "Listando arquivos no diretório atual."
+                            sh "ls -la"
+                        } else {
+                            echo "Diretório não encontrado."
+                        }
+                    }
+                }
             }
         }
 
