@@ -67,6 +67,13 @@ pipeline {
             }
         }
 
+        stage('Check Oracle dependency') {
+            steps {
+                // Imprime versão do SQL*Plus para verificar se está tudo certo
+                sh 'sqlplus -v'
+            }
+        }
+
         stage('Base Validation') {
             steps {
                 //Executar script para validar nome da base
