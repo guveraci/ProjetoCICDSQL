@@ -50,15 +50,15 @@ pipeline {
         stage('Base Validation') {
             steps {
                 //Executar script para validar nome da base
-                //sh 'cd ../script/Tables/'
-                //sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @select_globalname.sql'     
+                //sh 'cd ./devops/'
+                //sh '&{ORACLE_HOME}/sqlplus system/Admin@123@localhost:1521 @select_globalname.sql'     
             }
         }
 
         stage('Generate Backup') {
             steps {
                 //Instalar Powershell Core no server
-                //sh '/usr/bin/pwsh -File ./script_backup.ps1'
+                //sh '/usr/bin/pwsh -File ./chamador-backup-GeradorDePacotes.ps1'
                 echo "Gerando backup"
             }
         }
@@ -67,7 +67,7 @@ pipeline {
             steps {
                 //Criar o artefato
                 //compactar .zip
-                //sh 'zip -r backup.zip /path/backup'
+                //sh 'zip -r backup.zip /backup/'
                 echo "Gerando artifact do backup"
             }
         }
@@ -88,7 +88,7 @@ pipeline {
             steps {
                 //executar chamadores para aplicar os sql
                 //sh 'cd ../${BUILD_NUMBER}'
-                //sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @script/Tables/Teste2.sql'
+                //sh '&{ORACLE_HOME}/sqlplus admindb/dboracle@localhost:1521 @chamador-GeradorDePacotes-1.sql'
                 echo "Aplicando alterações na base"
             }
         }
