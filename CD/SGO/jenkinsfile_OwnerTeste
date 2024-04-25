@@ -34,8 +34,27 @@ pipeline {
 
         stage('Artifact Directory Validation') {
             steps {
-                sh 'cd ./devops/'
                 dir('./devops/'){
+                    script {
+                        if (fileExists('.')) {
+                            echo "Listando arquivos no diretório atual."
+                            sh "ls -la"
+                        } else {
+                            echo "Diretório não encontrado."
+                        }
+                    }
+                }
+                dir('./scripts/'){
+                    script {
+                        if (fileExists('.')) {
+                            echo "Listando arquivos no diretório atual."
+                            sh "ls -la"
+                        } else {
+                            echo "Diretório não encontrado."
+                        }
+                    }
+                }
+                dir('./'){
                     script {
                         if (fileExists('.')) {
                             echo "Listando arquivos no diretório atual."
@@ -51,8 +70,8 @@ pipeline {
         stage('Base Validation') {
             steps {
                 //Executar script para validar nome da base
-                //sh 'cd ./devops/'
-                //sh '&{ORACLE_HOME}/sqlplus system/Admin@123@localhost:1521 @select_globalname.sql'
+                sh 'cd ./devops/'
+                sh 'sqlplus system/Admin@123@localhost:1521 @select_globalname.sql'
                 echo 'validando a base'     
             }
         }
