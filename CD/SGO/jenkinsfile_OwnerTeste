@@ -90,6 +90,7 @@ pipeline {
 
         stage('Base Validation') {
             steps {
+                sh "sqlplus $DB_CONNECT_STRING"
                 //Executar script para validar nome da base
                 //sh 'cd /var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/'
                 sh "$ORACLE_HOME/sqlplus $DB_CONNECT_STRING @/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/select_globalname.sql"
