@@ -13,8 +13,8 @@ pipeline {
         PATH              = "$ORACLE_HOME:$PATH"
         LD_LIBRARY_PATH   = "$ORACLE_HOME/lib"
         TNS_ADMIN         = "$ORACLE_HOME/network/admin"
-        //DB_CONNECT_STRING = 'system/Admin@123@localhost:1521@ORCLCDB'
-        DB_CONNECT_STRING = 'system/Admin@123@172.18.0.4:1521@ORCLCDB'      
+        //DB_CONNECT_STRING = 'system/Admin@123@localhost:1521/ORCLCDB'
+        DB_CONNECT_STRING = 'system/Admin@123@172.18.0.4:1521/ORCLCDB'      
     }
 
     stages {
@@ -90,9 +90,6 @@ pipeline {
 
         stage('Base Validation') {
             steps {
-                sh "ping -c 4 172.18.0.4:1521"
-                sh "sqlplus $DB_CONNECT_STRING"
-                echo "testando a conexão"
                 //Executar script para validar nome da base
                 //sh 'cd /var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/'
                 sh "$ORACLE_HOME/sqlplus -S $DB_CONNECT_STRING @/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/select_globalname.sql"
