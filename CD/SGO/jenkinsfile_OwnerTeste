@@ -9,8 +9,8 @@ pipeline {
     }
 
     environment {
-        ORACLE_HOME = "PATH"
-        PATH = "$ORACLE_HOME/bin:$PATH"
+        ORACLE_HOME = "opt/oracle/instantclient_19_22"
+        PATH="$ORACLE_HOME:$PATH"
     }
 
     stages {
@@ -67,18 +67,18 @@ pipeline {
             }
         }
 
-        stage('Check Oracle dependency') {
+/*         stage('Check Oracle dependency') {
             steps {
                 // Imprime versão do SQL*Plus para verificar se está tudo certo
                 sh 'sqlplus -v'
             }
-        }
+        } */
 
         stage('Base Validation') {
             steps {
                 //Executar script para validar nome da base
                 sh 'cd /var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/'
-                sh 'sqlplus system/Admin@123@localhost:1521 @./var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/select_globalname.sql'
+                sh '&{ORACLE_HOME}/sqlplus system/Admin@123@localhost:1521 @./var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/select_globalname.sql'
                 echo 'validando a base'     
             }
         }
