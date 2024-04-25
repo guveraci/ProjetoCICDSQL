@@ -65,7 +65,7 @@ pipeline {
                         }
                     }
                 }
-                dir('$ORACLE_HOME'){
+                dir('opt/oracle/instantclient_19_22/'){
                     script {
                         if (fileExists('.')) {
                             echo "Listando arquivos no diretório atual."
