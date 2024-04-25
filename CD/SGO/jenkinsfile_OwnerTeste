@@ -79,9 +79,11 @@ pipeline {
             steps {
                 //Executar script para validar nome da base
                 sh 'cd /var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/'
-                sh (script: "sqlplus system/Admin@123@localhost:1521 @/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/select_globalname.sql", returnStdout: true).trim()
-                //sh '&{ORACLE_HOME}/sqlplus system/Admin@123@localhost:1521 @./var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/select_globalname.sql'
-                echo 'validando a base'     
+                script {
+                    sh (script: "sqlplus system/Admin@123@localhost:1521 @/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/select_globalname.sql", returnStdout: true).trim()
+                    //sh '&{ORACLE_HOME}/sqlplus system/Admin@123@localhost:1521 @./var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main/devops/select_globalname.sql'
+                    echo 'validando a base'
+                } 
             }
         }
 
