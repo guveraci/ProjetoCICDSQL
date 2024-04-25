@@ -65,7 +65,7 @@ pipeline {
                         }
                     }
                 }
-                dir('/opt/oracle/nstantclient_19_22'){
+                dir('/opt/oracle/'){
                     script {
                         if (fileExists('.')) {
                             echo "Listando arquivos no diretório atual."
