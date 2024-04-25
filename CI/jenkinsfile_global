@@ -48,9 +48,9 @@ pipeline {
             }
             post {
                 always {
-                    archiveArtifacts artifacts: './script/', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
-                    archiveArtifacts artifacts: './devops/', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
-                    archiveArtifacts artifacts: './*.sql', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS         
+                    archiveArtifacts artifacts: 'script/', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
+                    archiveArtifacts artifacts: 'devops/', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS
+                    archiveArtifacts artifacts: '*.sql', fingerprint: true // POST DO ARTIFACTS COM OS ARQUIVOS         
               }
             }
         }
