@@ -90,6 +90,7 @@ pipeline {
 
         stage('Base Validation') {
             steps {
+                sh "ping -c 4 172.18.0.4:1521"
                 sh "sqlplus $DB_CONNECT_STRING"
                 echo "testando a conexão"
                 //Executar script para validar nome da base
