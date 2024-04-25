@@ -44,7 +44,7 @@ pipeline {
                         }
                     }
                 }
-                dir('./bd/resources/'){
+                dir('./bd/resources/script/'){
                     script {
                         if (fileExists('.')) {
                             echo "Listando arquivos no diretório atual."
