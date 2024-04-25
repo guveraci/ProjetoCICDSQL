@@ -54,7 +54,7 @@ pipeline {
                         }
                     }
                 }
-                dir('./'){
+                dir('/var/jenkins_home/workspace/SGO_OracleDB_Owner-01_main'){
                     script {
                         if (fileExists('.')) {
                             echo "Listando arquivos no diretório atual."
